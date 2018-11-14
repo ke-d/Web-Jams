@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import csulb from './Images/csulb.jpeg'
 import NavBar from './Components/NavBar';
 import Thread from './Components/Thread';
-import {Grid, Row, Col} from 'react-bootstrap';
+import {Grid, Row, Col } from 'react-bootstrap';
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar />
+        <NavBar/>
         {/* <MyJumboComponent /> */}
         <Grid>
             <Row>
