@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Table} from 'react-bootstrap';
+import { Table, Form, FormControl, Button } from 'react-bootstrap';
 
 function ThreadComponent(props) {
     const styles = {
@@ -12,7 +12,6 @@ function ThreadComponent(props) {
         },
     };
     const { data } = props;
-    console.log(data.thumbnail);
     return (
         <tr>
             <td style={styles.titleStyle}>{props.index}</td>
@@ -66,6 +65,7 @@ class Thread extends Component {
         this.state = {
             data: {},
             gotData: false,
+            inputText: ''
         };
     }
     async componentDidMount() {
@@ -77,41 +77,66 @@ class Thread extends Component {
         });
 
     }
+
+    async SearchReddit(query) {
+        const response = await fetch(`https://www.reddit.com/search.json?q=${query}`);
+        const json = await response.json();
+        this.setState({
+            data: json,
+            gotData: true
+    });
+    }
+
     render() {
         const { data, gotData } = this.state;
-        console.log(gotData, data);
+        // console.log(gotData, data);
+        console.log(this.state.inputText);
         return (
-            <Table striped bordered condensed hover>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   {
-                       gotData && data.data.children.map((child, index) => {
-                           const { data } = child;
-                           return (
-                               <ThreadComponent
-                                   key={data.id}
-                                   index={index + 1}
-                                   title={data.title}
-                                   points={data.score}
-                                   comments={data.num_comments}
-                                   subreddit={data.subreddit_name_prefixed}
-                                   user={data.author}
-                                   data={data}
-                               />
-                           );
-                       })
-                   }
-                    
-
-                </tbody>
-            </Table>
+            <div>
+                <Form style={{width:'100%', paddingBottom:'20px'}}>
+                    <FormControl placeholder='Search Reddit...' value={this.state.inputText}
+                        onChange={(e) => this.setState({ inputText: e.target.value })}
+                        onKeyPress={
+                            (e) => {
+                                if (e.key === "Enter")
+                                {
+                                    e.preventDefault();
+                                    this.SearchReddit(this.state.inputText);
+                                }    
+                            }
+                        }
+                        onKeyDown={null}
+                    />
+                </Form>
+                <Table striped bordered condensed hover>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        gotData && data.data.children.map((child, index) => {
+                            const { data } = child;
+                            return (
+                                <ThreadComponent
+                                    key={data.id}
+                                    index={index + 1}
+                                    title={data.title}
+                                    points={data.score}
+                                    comments={data.num_comments}
+                                    subreddit={data.subreddit_name_prefixed}
+                                    user={data.author}
+                                    data={data}
+                                />
+                            );
+                        })
+                    }
+                    </tbody>
+                </Table>
+            </div>
         );
     }
 }
-
 
 export default Thread;
