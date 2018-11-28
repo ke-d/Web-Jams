@@ -32,6 +32,19 @@ app.post('/api/calc/add', (req, res) => {
 });
 
 
+app.post('/api/comments', (req, res) => {
+  console.log(req.body);
+  const { comment } = req.body;
+  posts.push(comment);
+  console.log(posts);
+  res.json({ result: true });
+});
+
+
+app.get('/api/comments', (req, res) => {
+  res.json({ result: posts });
+});
+
 app.get('/api/reddit/getsubredditnames', (req, res) => {
   res.json({ names: ['awesomesubreddit1', 'firefox', 'chrome'] });
 });
